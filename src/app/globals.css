@@ -1,26 +1,179 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-stack-sans);
+  --font-mono: var(--font-stack-mono);
+  --font-heading: var(--font-stack-sans);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/*
+ * White, neutral greys and one accent: a calm blue for links, buttons and the
+ * few things that should catch the eye. Nothing else is coloured, so a reader
+ * from a company sees the works, not the decoration.
+ */
+:root {
+  --font-stack-sans:
+    var(--font-inter), var(--font-noto-sans-jp), -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+  --font-stack-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.18 0.01 260);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.01 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.01 260);
+  --primary: oklch(0.5 0.16 258);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.97 0.003 260);
+  --secondary-foreground: oklch(0.22 0.01 260);
+  --muted: oklch(0.97 0.003 260);
+  --muted-foreground: oklch(0.5 0.01 260);
+  --accent: oklch(0.96 0.015 258);
+  --accent-foreground: oklch(0.3 0.08 258);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.92 0.004 260);
+  --input: oklch(0.92 0.004 260);
+  --ring: oklch(0.6 0.12 258);
+  --radius: 0.625rem;
+}
+
+.dark {
+  --background: oklch(0.16 0.008 260);
+  --foreground: oklch(0.96 0.003 260);
+  --card: oklch(0.2 0.008 260);
+  --card-foreground: oklch(0.96 0.003 260);
+  --popover: oklch(0.2 0.008 260);
+  --popover-foreground: oklch(0.96 0.003 260);
+  --primary: oklch(0.72 0.13 258);
+  --primary-foreground: oklch(0.16 0.02 260);
+  --secondary: oklch(0.26 0.008 260);
+  --secondary-foreground: oklch(0.96 0.003 260);
+  --muted: oklch(0.26 0.008 260);
+  --muted-foreground: oklch(0.72 0.01 260);
+  --accent: oklch(0.28 0.03 258);
+  --accent-foreground: oklch(0.92 0.03 258);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 11%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.6 0.1 258);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+    /* Room for the sticky header when a link jumps to a heading. */
+    scroll-padding-top: 5rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/*
+ * A work's document: GitHub-flavoured Markdown with a little raw HTML from
+ * its repository (centred paragraphs, images given a width, <sub> captions).
+ */
+@layer components {
+  .doc {
+    @apply prose max-w-none prose-neutral dark:prose-invert;
+    --tw-prose-links: var(--primary);
+    --tw-prose-invert-links: var(--primary);
+    line-height: 1.85;
+    overflow-wrap: anywhere;
+  }
+  .doc :where(h2) {
+    @apply mt-14 border-b pb-2 text-2xl;
+  }
+  .doc :where(h3) {
+    @apply mt-10 text-lg;
+  }
+  .doc :where(a) {
+    @apply underline-offset-4;
+  }
+  .doc :where([align="center"]) {
+    text-align: center;
+  }
+  .doc :where(p[align="center"]) {
+    @apply my-6;
+  }
+  .doc :where(sub) {
+    @apply text-sm leading-relaxed text-muted-foreground;
+    vertical-align: baseline;
+  }
+  .doc :where(table) {
+    @apply my-0 text-sm;
+  }
+  .doc :where(th, td) {
+    @apply align-top;
+  }
+  /* The documents' tables are mostly "項目 | 内容": keep the label readable. */
+  .doc :where(tr > :first-child) {
+    min-width: 6.5em;
+  }
+  .doc :where(thead th) {
+    @apply bg-muted/60;
+  }
+  .doc :where(blockquote) {
+    @apply border-primary/40 font-normal text-muted-foreground not-italic;
+  }
+  .doc :where(blockquote p)::before,
+  .doc :where(blockquote p)::after {
+    content: none;
+  }
+  .doc :where(code):not(:where(pre code)) {
+    @apply rounded bg-muted px-1.5 py-0.5 font-normal;
+  }
+  .doc :where(code):not(:where(pre code))::before,
+  .doc :where(code):not(:where(pre code))::after {
+    content: none;
+  }
+  .doc :where(pre) {
+    @apply border bg-muted text-[0.8125rem] leading-relaxed text-foreground;
+  }
+  .doc :where(img) {
+    @apply my-0 rounded-md border;
+  }
 }
