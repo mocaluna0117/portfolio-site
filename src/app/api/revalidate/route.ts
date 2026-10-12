@@ -1,12 +1,5 @@
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { PORTFOLIO_TAG } from "@/lib/data";
-
-/**
- * Prerendered routes the tag does not reach. Found on Vercel: the sitemap
- * kept its build-time contents after the tag was revalidated, while the
- * pages beside it were rendered afresh.
- */
-const UNTAGGED_PATHS = ["/sitemap.xml"];
 
 /**
  * Called by Convex (convex/revalidate.ts) whenever what visitors see has
@@ -21,6 +14,5 @@ export async function POST(request: Request) {
   }
   // Not served stale: the next visitor waits for the new page instead.
   revalidateTag(PORTFOLIO_TAG, { expire: 0 });
-  for (const path of UNTAGGED_PATHS) revalidatePath(path);
   return Response.json({ ok: true });
 }
